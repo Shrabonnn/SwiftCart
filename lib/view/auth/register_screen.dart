@@ -103,7 +103,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
         TextFormField(
           validator: (String? value) {
             if (value!.isEmpty) {
-              return "Enter a valid Password";
+              return "Enter a Password again";
             }
             return null;
           },

@@ -1,6 +1,7 @@
 import 'package:ecommerce/utils/app_colors.dart';
 import 'package:ecommerce/view/auth/register_screen.dart';
 import 'package:ecommerce/view/auth/profile_screen.dart';
+import 'package:ecommerce/view/home/home_screen.dart';
 import 'package:ecommerce/widgets/custom_button.dart';
 import 'package:ecommerce/widgets/custom_title_widgets.dart';
 import 'package:flutter/material.dart';
@@ -61,7 +62,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   //sign In button
                   CustomButton(title: 'Sign in', onTap: (){
                     //if(_formKey.currentState!.validate()){}
-                    Get.to(ProfileScreen());
+                    Get.to(HomeScreen());
                   }),
                   SizedBox(height: 32,),
 

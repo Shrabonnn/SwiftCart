@@ -121,7 +121,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         TextFormField(
           validator: (String? value) {
             if (value!.isEmpty) {
-              return "Enter a valid Email";
+              return "Enter a valid Name";
             }
             return null;
           },
@@ -134,7 +134,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         TextFormField(
           validator: (String? value) {
             if (value!.isEmpty) {
-              return "Enter a valid Password";
+              return "Enter a valid Address";
             }
             return null;
           },
@@ -148,7 +148,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         TextFormField(
           validator: (String? value) {
             if (value!.isEmpty) {
-              return "Enter a valid Password";
+              return "Enter a Phone Number";
             }
             return null;
           },
