@@ -33,7 +33,7 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(onPressed: (){}, icon: Icon(Icons.menu)),
-        actions: [IconButton(onPressed: (){}, icon: Icon(Icons.search))],
+        actions: [IconButton(onPressed: (){}, icon: Icon(Icons.shopping_cart))],
       ),
       body: SingleChildScrollView(
         child: Padding(
