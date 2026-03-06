@@ -1,8 +1,12 @@
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:ecommerce/view/cart/cart_list_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
 
 import '../../utils/app_colors.dart';
 import '../../widgets/custom_sigle_product_screen.dart';
+import '../auth/profile_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -32,9 +36,21 @@ class _HomeScreenState extends State<HomeScreen> {
     ];
     return Scaffold(
       appBar: AppBar(
-        leading: IconButton(onPressed: (){}, icon: Icon(Icons.menu)),
-        actions: [IconButton(onPressed: (){}, icon: Icon(Icons.shopping_cart))],
-      ),
+        leading: IconButton(onPressed: () {}, icon: Icon(Icons.menu)),
+        actions: [
+          // Cart Section
+          IconButton(
+            onPressed: () {
+              Get.to(CartListScreen());
+            },
+            icon: Icon(Icons.shopping_cart),
+          ),
+
+          //Profile Section
+          IconButton(onPressed: () {
+            Get.to(ProfileScreen());
+          }, icon: Icon(Icons.person),),
+        ],),
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(16.0),
