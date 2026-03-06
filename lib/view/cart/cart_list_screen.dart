@@ -133,7 +133,7 @@ class _CartListScreenState extends State<CartListScreen> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Text("Size: 35", style: TextStyle(color: Colors.black54)),
+                    Text("Sizeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee: 35", style: TextStyle(color: Colors.black54)),
                     SizedBox(height: 6),
                     ProductQuantityIncDecButton(onChange: (int p1) {}),
                   ],
