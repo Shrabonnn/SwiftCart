@@ -1,4 +1,6 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -9,6 +11,12 @@ class AuthController extends GetxController{
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
   TextEditingController confirmPasswordController = TextEditingController();
+
+  final TextEditingController fullNameTEController = TextEditingController();
+  final TextEditingController addressTEController = TextEditingController();
+  final TextEditingController phoneNumberTEController = TextEditingController();
+  RxString fullName = ''.obs;
+
 
   RxBool indicator = false.obs;
 
@@ -54,6 +62,44 @@ class AuthController extends GetxController{
           );
         });
 
+  }
+
+  Future<void> loadProfile() async {
+    String? email = _auth.currentUser?.email;
+    if (email != null) {
+      DocumentSnapshot doc = await FirebaseFirestore.instance.collection('users').doc(email).get();
+      if (doc.exists) {
+        fullName.value = doc['full_name'] ?? 'User';
+
+      }
+    }
+  }
+
+  void profileSetup()async{
+
+
+    try{
+      indicator.value = true;
+
+
+      final token = await FirebaseMessaging.instance.getToken();
+
+      String? email = FirebaseAuth.instance.currentUser?.email;
+
+      await FirebaseFirestore.instance.collection('users').doc(email).set({
+        'email': email,
+        'full_name': fullNameTEController.text,
+        'address': addressTEController.text,
+        'phone_number': phoneNumberTEController.text,
+        'token': token,
+      });
+      fullName.value = fullNameTEController.text;
+      indicator.value =false;
+      Get.offAll(()=> const HomeScreen());
+    }catch(e){
+      indicator.value = false;
+      Get.snackbar("Error", e.toString());
+    }
   }
 
   void clear(){

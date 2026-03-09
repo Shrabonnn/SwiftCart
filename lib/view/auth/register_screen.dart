@@ -20,7 +20,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
-  final controller = Get.put(AuthController());
+  final controller = Get.find<AuthController>();
 
   @override
   Widget build(BuildContext context) {

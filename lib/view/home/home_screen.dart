@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 
+import '../../controllers/auth_controller.dart';
 import '../../utils/app_colors.dart';
 import '../../widgets/custom_sigle_product_screen.dart';
 import '../auth/profile_screen.dart';
@@ -15,7 +16,17 @@ class HomeScreen extends StatefulWidget {
   State<HomeScreen> createState() => _HomeScreenState();
 }
 
+
+final controller = Get.put(AuthController());
 class _HomeScreenState extends State<HomeScreen> {
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    controller.loadProfile();
+  }
+
   @override
   Widget build(BuildContext context) {
 
@@ -57,13 +68,14 @@ class _HomeScreenState extends State<HomeScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text(
-                'Hello Flora 👋',
-                style: TextStyle(
-                  fontWeight: FontWeight.w700,
-                  fontSize: 20,
-                ),
-              ),
+               Obx(()=>Text(
+                 'Welcome \"${controller.fullName.value}"',
+                 style: TextStyle(
+                   color: Colors.black,
+                   fontWeight: FontWeight.w700,
+                   fontSize: 20,
+                 ),
+               ),),
               Text(
                 'Let’s start shopping!',
                 style: TextStyle(

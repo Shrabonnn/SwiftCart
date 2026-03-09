@@ -1,4 +1,6 @@
+import 'package:ecommerce/controllers/auth_controller.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:get/get_navigation/src/extension_navigation.dart';import '../../utils/app_colors.dart';
 
@@ -13,13 +15,13 @@ class ProfileScreen extends StatefulWidget {
   @override
   State<ProfileScreen> createState() => _ProfileScreenState();
 }
-final TextEditingController _fullNameTEController = TextEditingController();
-final TextEditingController _addressTEController = TextEditingController();
-final TextEditingController _phoneNumberTEController = TextEditingController();
+
 final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
 
 class _ProfileScreenState extends State<ProfileScreen> {
+  final controller =Get.find<AuthController>();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -53,11 +55,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   SizedBox(height: 32,),
 
                   //sign In button
-                  CustomButton(title: 'Complete Setup', onTap: (){
-                    if(_formKey.currentState!.validate()){
-
-                    }
-                  }),
+                  Obx(()=>CustomButton(
+                    title: 'Complete Setup',
+                    isLoading: controller.indicator.value,
+                    onTap: () {
+                      if (_formKey.currentState!.validate()) {
+                        controller.profileSetup();
+                      }
+                    },),),
                   SizedBox(height: 32,),
 
                 ],
@@ -125,7 +130,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             }
             return null;
           },
-          controller: _fullNameTEController,
+          controller: controller.fullNameTEController,
           decoration: InputDecoration(
             hintText: 'Full Name',
           ),
@@ -138,8 +143,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             }
             return null;
           },
-          obscureText: true,
-          controller: _addressTEController,
+          controller: controller.addressTEController,
           decoration: InputDecoration(
             hintText: 'Address',
           ),
@@ -152,8 +156,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             }
             return null;
           },
-          obscureText: true,
-          controller: _phoneNumberTEController,
+          controller: controller.phoneNumberTEController,
           decoration: InputDecoration(
             hintText: 'Phone Number',
           ),
