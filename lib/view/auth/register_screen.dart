@@ -1,4 +1,6 @@
+import 'package:ecommerce/controllers/auth_controller.dart';
 import 'package:ecommerce/view/auth/login_screen.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
@@ -12,12 +14,14 @@ class RegisterScreen extends StatefulWidget {
   @override
   State<RegisterScreen> createState() => _RegisterScreenState();
 }
-final TextEditingController _emaiTEController = TextEditingController();
-final TextEditingController _passwordTEController = TextEditingController();
-final TextEditingController _confirmPasswordTEController = TextEditingController();
-final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
 class _RegisterScreenState extends State<RegisterScreen> {
+
+
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+
+  final controller = Get.put(AuthController());
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -47,12 +51,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   _buildForm(),
                   SizedBox(height: 32,),
 
-                  //sign In button
-                  CustomButton(title: 'Sign up', onTap: (){
-                    if(_formKey.currentState!.validate()){
-
+                  Obx(()=>CustomButton(title: 'Sign up', onTap: () {
+                    if (_formKey.currentState!.validate()) {
+                      controller.signup();
                     }
-                  }),
+                  }, isLoading: controller.indicator.value),),
+
                   SizedBox(height: 32,),
 
                   //already have an account
@@ -70,6 +74,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
     );
   }
 
+
   Widget _buildForm() {
     return Column(
       children: [
@@ -80,7 +85,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
             }
             return null;
           },
-          controller: _emaiTEController,
+          controller: controller.emailController,
           decoration: InputDecoration(
             hintText: 'Email',
           ),
@@ -94,7 +99,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
             return null;
           },
           obscureText: true,
-          controller: _passwordTEController,
+          controller: controller.passwordController,
           decoration: InputDecoration(
             hintText: 'Password',
           ),
@@ -105,10 +110,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
             if (value!.isEmpty) {
               return "Enter a Password again";
             }
+            if (value != controller.passwordController.text) {
+              return "Password does not match";
+            }
             return null;
           },
           obscureText: true,
-          controller: _confirmPasswordTEController,
+          controller: controller.confirmPasswordController,
           decoration: InputDecoration(
             hintText: 'Confirm Password',
           ),

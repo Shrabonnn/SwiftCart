@@ -1,9 +1,11 @@
+import 'package:ecommerce/controllers/auth_controller.dart';
 import 'package:ecommerce/utils/app_colors.dart';
 import 'package:ecommerce/view/auth/register_screen.dart';
 import 'package:ecommerce/view/auth/profile_screen.dart';
 import 'package:ecommerce/view/home/home_screen.dart';
 import 'package:ecommerce/widgets/custom_button.dart';
 import 'package:ecommerce/widgets/custom_title_widgets.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
@@ -16,12 +18,16 @@ class LoginScreen extends StatefulWidget {
   State<LoginScreen> createState() => _LoginScreenState();
 }
 
- final TextEditingController _emaiTEController = TextEditingController();
- final TextEditingController _passwordTEController = TextEditingController();
- final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-
-
 class _LoginScreenState extends State<LoginScreen> {
+
+
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+
+  final controller = Get.put(AuthController());
+
+
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -60,10 +66,12 @@ class _LoginScreenState extends State<LoginScreen> {
                   SizedBox(height: 24,),
 
                   //sign In button
-                  CustomButton(title: 'Sign in', onTap: (){
-                    //if(_formKey.currentState!.validate()){}
-                    Get.to(HomeScreen());
-                  }),
+                  Obx(()=>CustomButton(title: 'Sign in',isLoading: controller.indicator.value, onTap: (){
+                    if(_formKey.currentState!.validate()){
+                      controller.login();
+                    }
+
+                  }),),
                   SizedBox(height: 32,),
 
                   //create new account button
@@ -81,6 +89,10 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
+
+
+
+
   Widget _buildForm() {
     return Column(
       children: [
@@ -91,7 +103,7 @@ class _LoginScreenState extends State<LoginScreen> {
             }
             return null;
           },
-          controller: _emaiTEController,
+          controller: controller.emailController,
           decoration: InputDecoration(
             hintText: 'Email',
           ),
@@ -105,7 +117,7 @@ class _LoginScreenState extends State<LoginScreen> {
             return null;
           },
           obscureText: true,
-          controller: _passwordTEController,
+          controller: controller.passwordController,
           decoration: InputDecoration(
             hintText: 'Password',
           ),
