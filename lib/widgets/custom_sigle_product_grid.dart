@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:ecommerce/utils/app_colors.dart';
 import 'package:ecommerce/view/productDetails/product_deatils_screen.dart';
 import 'package:flutter/material.dart';
@@ -7,7 +8,8 @@ import 'package:get/get_core/src/get_main.dart';
 
 
 class CustomSigleProductGrid extends StatelessWidget {
-  const CustomSigleProductGrid({super.key});
+  final QueryDocumentSnapshot<Map<String, dynamic>> product;
+  const CustomSigleProductGrid({super.key, required this.product});
 
   @override
   Widget build(BuildContext context) {
@@ -25,20 +27,21 @@ class CustomSigleProductGrid extends StatelessWidget {
           children: [
             Column(
               children: [
-                Image.asset('assets/images/product1.png'),
-                Text("Redmi Note 4",style: TextStyle(fontSize: 16,fontWeight: FontWeight.w600),),
+                Expanded(
+                    child: Image.network(product['image'], fit: BoxFit.cover,)),
+                Text(product['name'],style: TextStyle(fontSize: 16,fontWeight: FontWeight.w600),),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      '\$200',
+                      '\$${product['original_price']}',
                       style: TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
                     Text(
-                      '\$500',
+                      '\$${product['original_price']}',
                       style: TextStyle(
                         fontSize: 17,
                         color: Colors.black.withOpacity(.5),
