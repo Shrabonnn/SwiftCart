@@ -1,36 +1,28 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:ecommerce/widgets/custom_button.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../../controllers/home_controller.dart';
+import '../../controllers/product_controller.dart';
 import '../../utils/app_colors.dart';
-import '../../utils/images.dart';
 
-class ProductDeatilsScreen extends StatefulWidget {
-  const ProductDeatilsScreen({super.key});
+class ProductDeatilsScreen extends StatelessWidget {
+  final QueryDocumentSnapshot<Map<String, dynamic>> product;
 
-  @override
-  State<ProductDeatilsScreen> createState() => _ProductDeatilsScreenState();
-}
+  ProductDeatilsScreen({super.key, required this.product});
 
-class _ProductDeatilsScreenState extends State<ProductDeatilsScreen> {
-
-  int selectedSizeIndex = -1;
+  final ProductController productController = Get.put(ProductController());
+  final HomeController homecontroller = Get.find<HomeController>();
 
   @override
   Widget build(BuildContext context) {
-
-    List<int> sizeAvialable =[35,36,37,38,39,40];
-
-    // int selectedSizeIndex = -1; here doesn't work bcz setsate rebuild korle -1 hoye jay i
     final size = MediaQuery.sizeOf(context);
-
 
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
-          onPressed: () {
-            Get.back();
-          },
+          onPressed: () => Get.back(),
           icon: Icon(Icons.arrow_back),
         ),
       ),
@@ -38,83 +30,67 @@ class _ProductDeatilsScreenState extends State<ProductDeatilsScreen> {
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
+            // Product Image and Info
             Expanded(
               child: SingleChildScrollView(
                 child: Column(
                   children: [
                     Container(
-                      height: size.height * .3,
+                      height: size.height * 0.3,
                       padding: EdgeInsets.all(30),
                       decoration: BoxDecoration(
                         color: AppColors.cartBackground,
-                        borderRadius: BorderRadius.circular(20)
+                        borderRadius: BorderRadius.circular(20),
                       ),
-                      child: Center(child: Image.asset(ImagePath.product,)),
+                      child: Center(
+                        child: Image.network(product['image']),
+                      ),
                     ),
-                    SizedBox(height: 16,),
+                    SizedBox(height: 16),
                     Padding(
                       padding: EdgeInsets.all(15),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            'Apple Watch Series 6',
+                            product['name'],
                             style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 24,
-                            ),
+                                fontWeight: FontWeight.bold, fontSize: 24),
                           ),
-                          const SizedBox(height: 8),
+                          SizedBox(height: 8),
                           Row(
-                            children: [
-                              Icon(Icons.star, color: Colors.orangeAccent),
-                              Icon(Icons.star, color: Colors.orangeAccent),
-                              Icon(Icons.star, color: Colors.orangeAccent),
-                              Icon(Icons.star, color: Colors.orangeAccent),
-                              Icon(Icons.star, color: Colors.orangeAccent),
-                            ],
+                            children: List.generate(
+                                5,
+                                    (index) => Icon(Icons.star,
+                                    color: Colors.orangeAccent)),
                           ),
-                          const SizedBox(height: 8),
+                          SizedBox(height: 8),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Row(
-                                children: [
-                                  Text(
-                                    '\$500 discount_price',
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                ],
+                              Text(
+                                '\$${product['discount_price'] ?? product['original_price']}',
+                                style: TextStyle(
+                                    fontWeight: FontWeight.bold, fontSize: 18),
                               ),
                               Text(
                                 'Available in stock',
-                                style: TextStyle(
-                                  fontWeight: FontWeight.w600,
-                                ),
-                              )
+                                style: TextStyle(fontWeight: FontWeight.w600),
+                              ),
                             ],
                           ),
-                          const SizedBox(
-                            height: 16,
-                          ),
+                          SizedBox(height: 16),
                           Text(
                             'About',
                             style: TextStyle(
-                              fontWeight: FontWeight.w700,
-                              fontSize: 24
-                            ),
+                                fontWeight: FontWeight.w700, fontSize: 24),
                           ),
-                          SizedBox(height: 8,),
+                          SizedBox(height: 8),
                           Text(
-                            'The upgraded S6 SiP runs up to 20 percent faster, allowing apps to also launch 20 percent faster, while maintaining the same all-day 18-hour battery life.',
-                            style: TextStyle(
-                              color: Colors.black.withOpacity(.5),
-                            ),
+                            product['about'] ?? '',
+                            style:
+                            TextStyle(color: Colors.black.withOpacity(0.5)),
                           ),
-
-
                         ],
                       ),
                     ),
@@ -123,38 +99,77 @@ class _ProductDeatilsScreenState extends State<ProductDeatilsScreen> {
               ),
             ),
 
+            SizedBox(height: 16),
 
-            SizedBox(height: 16,),
-            SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: Row(
-                children: [
-                  for(int i in sizeAvialable)
-                    GestureDetector(
-                      onTap: (){
-                        setState(() {
-                          selectedSizeIndex = i;
-                        });
+            // Size Selector from Firestore
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 18.0),
+              child: StreamBuilder(
+                stream: FirebaseFirestore.instance.collection('products').doc(product.id).snapshots(),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const CircularProgressIndicator();
+                  } else if (!snapshot.hasData || snapshot.data!.data() == null) {
+                    return const Text("No sizes available");
+                  }
+
+                  // keep sizes as strings
+                  List<String> sizes = List<String>.from(snapshot.data!.data()!['sizes'] ?? []);
+
+                  return SizedBox(
+                    height: 40,
+                    child: ListView.builder(
+                      scrollDirection: Axis.horizontal,
+                      itemCount: sizes.length,
+                      itemBuilder: (context, index) {
+                        String sizeValue = sizes[index];
+                        return Obx(
+                              () => InkWell(
+                            onTap: () {
+                              productController.selectedIndex.value = index;
+                              productController.selectedSize.value = sizeValue;
+                            },
+                            child: Container(
+                              width: 40,
+                              margin: const EdgeInsets.only(right: 10),
+                              decoration: BoxDecoration(
+                                color: productController.selectedIndex.value == index
+                                    ? AppColors.primaryColor
+                                    : AppColors.cartBackground,
+                                border: Border.all(color: Colors.black.withOpacity(0.1)),
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              child: Center(
+                                child: Text(
+                                  sizeValue,
+                                  style: TextStyle(
+                                    color: productController.selectedIndex.value == index
+                                        ? Colors.white
+                                        : Colors.black,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        );
                       },
-                      child: Container(
-                        margin: EdgeInsets.all(5),
-                        height: 55,
-                        width: 55,
-                        decoration:BoxDecoration(
-                            color: selectedSizeIndex == i ? AppColors.primaryColor: AppColors.cartBackground,
-                            borderRadius: BorderRadius.circular(8)
-                        ) ,
-                        child: Center(child: Text("$i",style: TextStyle(fontSize: 20,color:selectedSizeIndex == i? Colors.white : Colors.black,fontWeight: FontWeight.w400),)),
-                      ),
-                    )
-
-                ],
+                    ),
+                  );
+                },
               ),
             ),
-            SizedBox(height: 16,),
+
+            SizedBox(height: 8),
+
             Padding(
               padding: const EdgeInsets.all(8.0),
-              child: CustomButton(title: "Add to cart", onTap: () {}),
+              child: CustomButton(
+                title: "Add to cart",
+                onTap: () {
+                  productController.addToCart(product);
+                },
+              ),
             ),
           ],
         ),

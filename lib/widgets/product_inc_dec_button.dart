@@ -3,8 +3,9 @@ import 'package:flutter/material.dart';
 import '../utils/app_colors.dart';
 
 class ProductQuantityIncDecButton extends StatefulWidget {
-  const ProductQuantityIncDecButton({super.key, required this.onChange});
+  const ProductQuantityIncDecButton({super.key, required this.onChange, required this.quantity});
 
+  final int quantity;
   final Function(int) onChange;
 
   @override
@@ -12,19 +13,25 @@ class ProductQuantityIncDecButton extends StatefulWidget {
 }
 
 class _ProductQuantityIncDecButtonState extends State<ProductQuantityIncDecButton> {
-  int _count = 1;
+  late int _count;
+  final double total = 0 ;
+
+  @override
+  void initState() {
+    super.initState();
+    _count = widget.quantity; // Start with initial quantity
+  }
 
   @override
   Widget build(BuildContext context) {
     return Row(
       children: [
         _buildIconButton(icon: Icon(Icons.remove,color: Colors.black),onTap: (){
-          if(_count> 1){
-            _count--;
-            widget.onChange(_count);
+          if (_count > 1) {
             setState(() {
-
+              _count--;
             });
+            widget.onChange(_count); // Send updated value back
           }
 
         },),
@@ -33,12 +40,11 @@ class _ProductQuantityIncDecButtonState extends State<ProductQuantityIncDecButto
           child: Text('${_count}',style: TextStyle(fontSize: 18),),
         ),
         _buildIconButton(icon: Icon(Icons.add,color: Colors.black,),onTap: (){
-          if(_count< 20){
-            _count++;
-            widget.onChange(_count);
+          if (_count < 20) {
             setState(() {
-
+              _count++;
             });
+            widget.onChange(_count); // Send updated value back
           }
         },),
 

@@ -10,6 +10,8 @@ class HomeController extends GetxController{
     getBanner();
   }
 
+
+
   getBanner()async{
     final data = await FirebaseFirestore.instance.collection('banners').get();
 

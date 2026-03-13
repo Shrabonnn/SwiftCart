@@ -8,14 +8,18 @@ import 'package:get/get_core/src/get_main.dart';
 
 
 class CustomSigleProductGrid extends StatelessWidget {
+
   final QueryDocumentSnapshot<Map<String, dynamic>> product;
+
   const CustomSigleProductGrid({super.key, required this.product});
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: (){
-        Get.to(ProductDeatilsScreen());
+        Get.to(ProductDeatilsScreen(
+          product: product,
+        ));
       },
       child: Container(
         padding: EdgeInsets.all(10),
@@ -34,7 +38,7 @@ class CustomSigleProductGrid extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      '\$${product['original_price']}',
+                      '\$${product['discount_price'] ?? product['original_price']}',
                       style: TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,

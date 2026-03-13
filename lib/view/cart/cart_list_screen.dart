@@ -1,5 +1,8 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:ecommerce/controllers/cart_controller.dart';
 import 'package:ecommerce/utils/app_colors.dart';
 import 'package:ecommerce/view/home/home_screen.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_connect/http/src/utils/utils.dart';
@@ -16,9 +19,15 @@ class CartListScreen extends StatefulWidget {
   State<CartListScreen> createState() => _CartListScreenState();
 }
 
+final user = FirebaseAuth.instance.currentUser;
+
 class _CartListScreenState extends State<CartListScreen> {
   @override
   Widget build(BuildContext context) {
+
+    final cartController = Get.find<CartController>();
+
+
     final size = MediaQuery.sizeOf(context);
     return Scaffold(
       appBar: AppBar(
@@ -35,12 +44,16 @@ class _CartListScreenState extends State<CartListScreen> {
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
-            Expanded(
-              child: Column(
-                children: [_buildCartListItem(), _buildCartListItem()],
-              ),
-            ),
-            Padding(
+            Obx(()=>  Expanded(
+              child: ListView.builder(
+                  itemCount: cartController.cart.length,
+                  itemBuilder: (context,index){
+
+                    final product = cartController.cart[index];
+                    return _buildCartListItem(product);
+                  }),
+            ),),
+            Obx(()=> Padding(
               padding: const EdgeInsets.symmetric(horizontal: 12.0),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -50,7 +63,7 @@ class _CartListScreenState extends State<CartListScreen> {
                     style: TextStyle(fontWeight: FontWeight.w500, fontSize: 18),
                   ),
                   Text(
-                    '\$18000',
+                    cartController.totalPrice.value.toString(),
                     style: TextStyle(
                       fontWeight: FontWeight.w500,
                       fontSize: 18,
@@ -59,7 +72,7 @@ class _CartListScreenState extends State<CartListScreen> {
                   ),
                 ],
               ),
-            ),
+            ),),
             SizedBox(height: 16),
             Padding(
               padding: const EdgeInsets.all(8.0),
@@ -71,7 +84,7 @@ class _CartListScreenState extends State<CartListScreen> {
     );
   }
 
-  Row _buildCartListItem() {
+  Widget _buildCartListItem(product) {
     return Row(
       children: [
         Container(
@@ -100,7 +113,7 @@ class _CartListScreenState extends State<CartListScreen> {
                     color: AppColors.fieldBackground,
                     borderRadius: BorderRadius.circular(8),
                   ),
-                  child: Image.asset(ImagePath.product),
+                  child: Image.network(product['image']),
                 ),
                 SizedBox(width: 8),
                 Expanded(
@@ -109,7 +122,7 @@ class _CartListScreenState extends State<CartListScreen> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text(
-                        "Apple W-series 6",
+                        product['name'],
                         style: TextStyle(
                           fontSize: 17,
                           fontWeight: FontWeight.w500,
@@ -119,7 +132,7 @@ class _CartListScreenState extends State<CartListScreen> {
                       ),
                       SizedBox(height: 8),
                       Text(
-                        "\$300",
+                        "\$${product['price']}",
                         style: TextStyle(
                           fontWeight: FontWeight.w600,
                           fontSize: 17,
@@ -133,9 +146,22 @@ class _CartListScreenState extends State<CartListScreen> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Text("Size: 35", style: TextStyle(color: Colors.black54)),
+                    Text("Size: ${product['variant']}", style: TextStyle(color: Colors.black54)),
                     SizedBox(height: 6),
-                    ProductQuantityIncDecButton(onChange: (int p1) {}),
+
+
+                    ProductQuantityIncDecButton(
+                      quantity: product['quantity'],
+                      onChange: (newQuantity) {
+                        // Update Firestore , change quantity
+                        FirebaseFirestore.instance
+                            .collection('users')
+                            .doc(user!.email)
+                            .collection('cart')
+                            .doc(product.id)
+                            .update({"quantity": newQuantity});
+                      },
+                    ),
                   ],
                 ),
               ],
