@@ -16,7 +16,7 @@ class ProductController extends GetxController{
       'user_email': user!.email,
       'product_id': product.id,
       'name': product['name'],
-      'price': product['discount_price'] ?? product['original_price'],
+      'price': product['discount_price']== "" ? product['original_price']: product['discount_price'],
       'image': product['image'],
       'variant': selectedSize.value,
       'quantity': 1,

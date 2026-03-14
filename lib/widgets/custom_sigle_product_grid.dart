@@ -38,12 +38,14 @@ class CustomSigleProductGrid extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      '\$${product['discount_price'] ?? product['original_price']}',
+                      '\$${product['discount_price']== "" ? product['original_price'] : product['discount_price']}',
                       style: TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
+
+                    if (product['discount_price'] != "")
                     Text(
                       '\$${product['original_price']}',
                       style: TextStyle(

@@ -1,6 +1,8 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:ecommerce/splash_screen.dart';
 import 'package:ecommerce/view/cart/cart_list_screen.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
@@ -38,6 +40,12 @@ class _HomeScreenState extends State<HomeScreen> {
       appBar: AppBar(
         leading: IconButton(onPressed: () {}, icon: Icon(Icons.menu)),
         actions: [
+
+          //Profile Section
+          IconButton(onPressed: () {
+            Get.to(ProfileScreen());
+          }, icon: Icon(Icons.person),),
+
           // Cart Section
           IconButton(
             onPressed: () {
@@ -46,10 +54,13 @@ class _HomeScreenState extends State<HomeScreen> {
             icon: Icon(Icons.shopping_cart),
           ),
 
-          //Profile Section
+          //Log out
           IconButton(onPressed: () {
-            Get.to(ProfileScreen());
-          }, icon: Icon(Icons.person),),
+
+            FirebaseAuth.instance.currentUser == null ;
+            Get.offAll(()=> SplashScreen());
+
+          }, icon: Icon(Icons.logout_outlined),),
         ],),
       body: SingleChildScrollView(
         child: Padding(
@@ -122,34 +133,43 @@ class _HomeScreenState extends State<HomeScreen> {
               const SizedBox(
                 height: 10,
               ),
+
+              //Top Categories
               StreamBuilder(stream: FirebaseFirestore.instance.collection('categories').snapshots(), builder: (context,snapshot){
                 if(snapshot.connectionState ==  ConnectionState.waiting){
                   return CircularProgressIndicator();
                 }
 
-                return SizedBox(
-                  height: 80,
-                  child: ListView.builder(
-                      scrollDirection:Axis.horizontal,
-                      itemCount: snapshot.data!.docs.length,
-                      itemBuilder: (context ,index){
+                return GestureDetector(
 
-                        final category = snapshot.data!.docs[index];
+                  // need to implemented Category wise 
+                  onTap: (){
+                    Get.to(()=>CartListScreen());
+                  },
+                  child: SizedBox(
+                    height: 80,
+                    child: ListView.builder(
+                        scrollDirection:Axis.horizontal,
+                        itemCount: snapshot.data!.docs.length,
+                        itemBuilder: (context ,index){
 
-                        return Container(
-                          margin: EdgeInsetsGeometry.all(5),
-                          width: 80,
-                          decoration: BoxDecoration(
-                            color: AppColors.cartBackground,
-                            borderRadius: BorderRadius.circular(12),
-                            border: Border.all(
-                              color: Colors.black.withOpacity(.1),
-                              width: 1.5,
+                          final category = snapshot.data!.docs[index];
+
+                          return Container(
+                            margin: EdgeInsetsGeometry.all(5),
+                            width: 80,
+                            decoration: BoxDecoration(
+                              color: AppColors.cartBackground,
+                              borderRadius: BorderRadius.circular(12),
+                              border: Border.all(
+                                color: Colors.black.withOpacity(.1),
+                                width: 1.5,
+                              ),
                             ),
-                          ),
-                          child: Image.network(category['icon']),
-                        );
-                      }),
+                            child: Image.network(category['icon']),
+                          );
+                        }),
+                  ),
                 );
               }),
 

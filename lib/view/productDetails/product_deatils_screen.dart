@@ -37,13 +37,13 @@ class ProductDeatilsScreen extends StatelessWidget {
                   children: [
                     Container(
                       height: size.height * 0.3,
-                      padding: EdgeInsets.all(30),
                       decoration: BoxDecoration(
                         color: AppColors.cartBackground,
                         borderRadius: BorderRadius.circular(20),
                       ),
                       child: Center(
-                        child: Image.network(product['image']),
+                        child: Image.network(product['image'],
+                        fit: BoxFit.cover,),
                       ),
                     ),
                     SizedBox(height: 16),
@@ -69,7 +69,7 @@ class ProductDeatilsScreen extends StatelessWidget {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Text(
-                                '\$${product['discount_price'] ?? product['original_price']}',
+                                '\$${product['discount_price']== "" ? product['original_price']: product['discount_price']}',
                                 style: TextStyle(
                                     fontWeight: FontWeight.bold, fontSize: 18),
                               ),
