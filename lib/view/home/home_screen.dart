@@ -12,6 +12,7 @@ import '../../controllers/home_controller.dart';
 import '../../utils/app_colors.dart';
 import '../../widgets/custom_sigle_product_grid.dart';
 import '../auth/profile_screen.dart';
+import '../wish_list_screen/wish_list_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -38,13 +39,20 @@ class _HomeScreenState extends State<HomeScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        leading: IconButton(onPressed: () {}, icon: Icon(Icons.menu)),
+        leading: IconButton(onPressed: () {
+          Get.to(ProfileScreen());
+        }, icon: Icon(Icons.person)),
         actions: [
 
           //Profile Section
           IconButton(onPressed: () {
-            Get.to(ProfileScreen());
-          }, icon: Icon(Icons.person),),
+            Get.to(() => WishListScreen());
+          }, icon: Icon(Icons.favorite_border),),
+
+          // //Profile Section
+          // IconButton(onPressed: () {
+          //   Get.to(ProfileScreen());
+          // }, icon: Icon(Icons.person),),
 
           // Cart Section
           IconButton(

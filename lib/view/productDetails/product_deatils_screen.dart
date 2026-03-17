@@ -8,6 +8,7 @@ import '../../controllers/product_controller.dart';
 import '../../utils/app_colors.dart';
 
 class ProductDeatilsScreen extends StatelessWidget {
+
   final QueryDocumentSnapshot<Map<String, dynamic>> product;
 
   ProductDeatilsScreen({super.key, required this.product});

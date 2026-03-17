@@ -1,20 +1,30 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:ecommerce/utils/app_colors.dart';
 import 'package:ecommerce/view/productDetails/product_deatils_screen.dart';
+import 'package:ecommerce/view/wish_list_screen/wish_list_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_connect/http/src/utils/utils.dart';
 import 'package:get/get_core/src/get_main.dart';
+
+import '../controllers/wish_list_controller.dart';
 
 
 class CustomSigleProductGrid extends StatelessWidget {
 
   final QueryDocumentSnapshot<Map<String, dynamic>> product;
 
-  const CustomSigleProductGrid({super.key, required this.product});
+   CustomSigleProductGrid({super.key, required this.product});
+
+  final WishListController wishListController = Get.find();
+
+
+
 
   @override
   Widget build(BuildContext context) {
+
+
     return GestureDetector(
       onTap: (){
         Get.to(ProductDeatilsScreen(
@@ -76,17 +86,27 @@ class CustomSigleProductGrid extends StatelessWidget {
             Positioned(
               top: 2,
               right: 2,
-              child: Container(
-                padding: EdgeInsets.all(1),
+              child: Obx(()=>Container(
+                width: 30,
+                height: 30,
                 decoration: BoxDecoration(
-                    border: Border.all(color: Colors.black54),
-                    shape: BoxShape.circle
+                  border: Border.all(color: Colors.black54),
+                  shape: BoxShape.circle,
                 ),
-                child: Padding(
-                  padding: const EdgeInsets.all(4.0),
-                  child: Icon(Icons.favorite_border, size: 18),
+                child: Center(
+                  child: GestureDetector(
+                    onTap: () {
+                      wishListController.toggleWishlist(product);
+
+                    },
+                    child: Icon(
+                      wishListController.isExist(product) ? Icons.favorite :Icons.favorite_border,
+                      size: 18,
+                      color: wishListController.isExist(product)? Colors.red: Colors.black,
+                    ),
+                  ),
                 ),
-              ),
+              ),),
             )
           ],
         )

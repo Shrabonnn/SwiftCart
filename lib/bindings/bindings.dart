@@ -1,6 +1,7 @@
 import 'package:ecommerce/controllers/auth_controller.dart';
 import 'package:ecommerce/controllers/cart_controller.dart';
 import 'package:ecommerce/controllers/home_controller.dart';
+import 'package:ecommerce/controllers/wish_list_controller.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 
@@ -13,5 +14,6 @@ class AuthBindings extends Bindings{
     Get.put<AuthController>(AuthController());
     Get.put<HomeController>(HomeController());
     Get.put<CartController>(CartController());
+    Get.put<WishListController>(WishListController());
   }
 }

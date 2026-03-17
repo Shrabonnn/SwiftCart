@@ -22,7 +22,6 @@ ThemeData AppThemeData() {
           borderRadius: BorderRadius.circular(12),
           //borderSide: BorderSide(color: Colors.grey.shade300),
         ),
-
       )
   );
 }
