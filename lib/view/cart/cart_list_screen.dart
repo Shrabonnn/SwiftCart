@@ -76,7 +76,9 @@ class _CartListScreenState extends State<CartListScreen> {
             SizedBox(height: 16),
             Padding(
               padding: const EdgeInsets.all(8.0),
-              child: CustomButton(title: "Buy Now", onTap: () {}),
+              child: CustomButton(title: "Buy Now", onTap: () {
+                cartController.removecart();
+              }),
             ),
           ],
         ),
@@ -106,14 +108,16 @@ class _CartListScreenState extends State<CartListScreen> {
           child: Padding(
             padding: const EdgeInsets.all(10.0),
             child: Row(
+
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Container(
+                  width: 110,
                   decoration: BoxDecoration(
                     color: AppColors.fieldBackground,
                     borderRadius: BorderRadius.circular(8),
                   ),
-                  child: Image.network(product['image']),
+                  child: Image.network(product['image'],fit: BoxFit.cover,),
                 ),
                 SizedBox(width: 8),
                 Expanded(

@@ -2,6 +2,7 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:ecommerce/splash_screen.dart';
 import 'package:ecommerce/view/cart/cart_list_screen.dart';
+import 'package:ecommerce/view/categories/categories.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -39,6 +40,19 @@ class _HomeScreenState extends State<HomeScreen> {
 
     return Scaffold(
       appBar: AppBar(
+        title: Row(mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            Text('Swift',style:TextStyle(
+              fontSize: 24,
+              fontWeight: FontWeight.w400
+            ),),
+            Text('Cart',style:TextStyle(
+                fontSize: 24,
+                color: Colors.black54
+            ),),
+          ],
+        ),
+        centerTitle: true,
         leading: IconButton(onPressed: () {
           Get.to(ProfileScreen());
         }, icon: Icon(Icons.person)),
@@ -143,28 +157,36 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
 
               //Top Categories
-              StreamBuilder(stream: FirebaseFirestore.instance.collection('categories').snapshots(), builder: (context,snapshot){
-                if(snapshot.connectionState ==  ConnectionState.waiting){
-                  return CircularProgressIndicator();
-                }
+              StreamBuilder(
+                stream: FirebaseFirestore.instance.collection('categories').snapshots(),
+                builder: (context, snapshot) {
 
-                return GestureDetector(
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return Center(child: CircularProgressIndicator());
+                  }
 
-                  // need to implemented Category wise 
-                  onTap: (){
-                    Get.to(()=>CartListScreen());
-                  },
-                  child: SizedBox(
+                  if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+                    return Center(child: Text("No categories found"));
+                  }
+
+                  return SizedBox(
                     height: 80,
                     child: ListView.builder(
-                        scrollDirection:Axis.horizontal,
-                        itemCount: snapshot.data!.docs.length,
-                        itemBuilder: (context ,index){
+                      scrollDirection: Axis.horizontal,
+                      itemCount: snapshot.data!.docs.length,
+                      itemBuilder: (context, index) {
 
-                          final category = snapshot.data!.docs[index];
+                        final category = snapshot.data!.docs[index];
 
-                          return Container(
-                            margin: EdgeInsetsGeometry.all(5),
+                        return GestureDetector(
+                          onTap: () {
+                            // category wise navigation
+                            Get.to(() => Categories(
+                              category: category,
+                            ));
+                          },
+                          child: Container(
+                            margin: EdgeInsets.all(5),
                             width: 80,
                             decoration: BoxDecoration(
                               color: AppColors.cartBackground,
@@ -175,11 +197,13 @@ class _HomeScreenState extends State<HomeScreen> {
                               ),
                             ),
                             child: Image.network(category['icon']),
+                          )
                           );
-                        }),
-                  ),
-                );
-              }),
+                      },
+                    ),
+                  );
+                },
+              ),
 
               const SizedBox(height: 20,),
               StreamBuilder(stream: FirebaseFirestore.instance.collection('products').snapshots(), builder: (context,snapshot){

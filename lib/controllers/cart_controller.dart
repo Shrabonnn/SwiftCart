@@ -44,6 +44,22 @@ class CartController extends GetxController{
     totalPrice.value = total;
   }
 
+  // when click the buy now button it remove all the cart
+  removecart() async {
+    var snapshot = await FirebaseFirestore.instance
+        .collection('users')
+        .doc(user!.email)
+        .collection('cart')
+        .get();
+
+    for (var doc in snapshot.docs) {
+      await doc.reference.delete();
+    }
+
+    cart.clear();
+    totalPrice.value = 0.0;
+  }
+
 
 
 }
