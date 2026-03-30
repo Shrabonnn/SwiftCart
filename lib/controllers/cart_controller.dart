@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get/get.dart';
@@ -12,18 +14,38 @@ class CartController extends GetxController{
 
   }
 
-  final user = FirebaseAuth.instance.currentUser;
+  @override
+  void onClose() {
+    // TODO: implement onClose
+    cartSubscription?.cancel();
+    super.onClose();
+
+  }
+
 
   var cart = <QueryDocumentSnapshot>[].obs;
   RxBool isLoading = true.obs;
 
   RxDouble totalPrice = 0.0.obs;
+  StreamSubscription? cartSubscription;
 
   getCart() async{
 
-    await FirebaseFirestore.instance.collection('users').doc(user!.email).collection('cart').snapshots().listen((snapshot){
-      print(snapshot.docs.length);
-      isLoading.value = false;
+    final user = FirebaseAuth.instance.currentUser;
+
+    if(user == null) return ;
+
+
+    cartSubscription = FirebaseFirestore.instance
+        .collection('users')
+        .doc(user!.email)
+        .collection('cart')
+        .snapshots()
+        .listen((snapshot) {
+         // print(snapshot.docs.length);
+          isLoading.value = false;
+          cart.value = snapshot.docs;
+          calculateTotal();
       // cart.add(firebaseCart)
 
       cart.value =snapshot.docs;
@@ -46,6 +68,7 @@ class CartController extends GetxController{
 
   // when click the buy now button it remove all the cart
   removecart() async {
+    final user = FirebaseAuth.instance.currentUser;
     var snapshot = await FirebaseFirestore.instance
         .collection('users')
         .doc(user!.email)
@@ -58,6 +81,16 @@ class CartController extends GetxController{
 
     cart.clear();
     totalPrice.value = 0.0;
+  }
+
+  deleteFromCart(String docID)async{
+    final user = FirebaseAuth.instance.currentUser;
+    var snapshot = await FirebaseFirestore.instance
+        .collection('users')
+        .doc(user!.email)
+        .collection('cart').doc(docID).delete();
+
+
   }
 
 

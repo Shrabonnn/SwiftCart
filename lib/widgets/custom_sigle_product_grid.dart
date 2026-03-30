@@ -16,7 +16,7 @@ class CustomSigleProductGrid extends StatelessWidget {
 
    CustomSigleProductGrid({super.key, required this.product});
 
-  final WishListController wishListController = Get.find();
+  final wishController = Get.find<WishListController>();
 
 
 
@@ -86,27 +86,32 @@ class CustomSigleProductGrid extends StatelessWidget {
             Positioned(
               top: 2,
               right: 2,
-              child: Obx(()=>Container(
-                width: 30,
-                height: 30,
-                decoration: BoxDecoration(
-                  border: Border.all(color: Colors.black54),
-                  shape: BoxShape.circle,
-                ),
-                child: Center(
-                  child: GestureDetector(
-                    onTap: () {
-                      wishListController.toggleWishlist(product);
+              child: Obx(() {
+                final isFav = wishController.wishlist.contains(product.id);
 
-                    },
-                    child: Icon(
-                      wishListController.isExist(product) ? Icons.favorite :Icons.favorite_border,
-                      size: 18,
-                      color: wishListController.isExist(product)? Colors.red: Colors.black,
+                return Container(
+                  width: 30,
+                  height: 30,
+                  decoration: BoxDecoration(
+                    border: Border.all(color: Colors.black54),
+                    shape: BoxShape.circle,
+                  ),
+                  child: Center(
+                    child: IconButton(
+                      padding: EdgeInsets.zero,
+                      constraints: BoxConstraints(),
+                      onPressed: () {
+                        wishController.toggleWishlist(product);
+                      },
+                      icon: Icon(
+                        isFav ? Icons.favorite : Icons.favorite_border,
+                        size: 18,
+                        color: isFav ? Colors.red : Colors.black,
+                      ),
                     ),
                   ),
-                ),
-              ),),
+                );
+              }),
             )
           ],
         )

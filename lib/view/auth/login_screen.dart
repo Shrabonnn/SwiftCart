@@ -1,4 +1,5 @@
 import 'package:ecommerce/controllers/auth_controller.dart';
+import 'package:ecommerce/controllers/cart_controller.dart';
 import 'package:ecommerce/utils/app_colors.dart';
 import 'package:ecommerce/view/auth/register_screen.dart';
 import 'package:ecommerce/view/auth/profile_screen.dart';

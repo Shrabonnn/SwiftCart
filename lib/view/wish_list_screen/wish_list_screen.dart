@@ -35,7 +35,7 @@ class WishListScreen extends StatelessWidget {
               itemCount: wishListController.wishlist.length,
               itemBuilder: (context, index) {
 
-                var product = wishListController.wishlist[index];
+                final product = snapshot.data!.docs[index];
                 return CustomSigleProductGrid(product: product,);
               },
             );

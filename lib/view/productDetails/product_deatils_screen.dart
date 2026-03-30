@@ -117,6 +117,11 @@ class ProductDeatilsScreen extends StatelessWidget {
                   // keep sizes as strings
                   List<String> sizes = List<String>.from(snapshot.data!.data()!['sizes'] ?? []);
 
+                  // if (productController.selectedSize.value.isEmpty && sizes.isNotEmpty) {
+                  //   productController.selectedSize.value = sizes[0];
+                  //   productController.selectedIndex.value = 0;
+                  // }
+
                   return SizedBox(
                     height: 40,
                     child: ListView.builder(

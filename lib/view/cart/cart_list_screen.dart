@@ -12,21 +12,14 @@ import '../../utils/images.dart';
 import '../../widgets/custom_button.dart';
 import '../../widgets/product_inc_dec_button.dart';
 
-class CartListScreen extends StatefulWidget {
+class CartListScreen extends StatelessWidget {
   const CartListScreen({super.key});
 
   @override
-  State<CartListScreen> createState() => _CartListScreenState();
-}
-
-final user = FirebaseAuth.instance.currentUser;
-
-class _CartListScreenState extends State<CartListScreen> {
-  @override
   Widget build(BuildContext context) {
 
+    final user = FirebaseAuth.instance.currentUser;
     final cartController = Get.find<CartController>();
-
 
     final size = MediaQuery.sizeOf(context);
     return Scaffold(
@@ -50,7 +43,7 @@ class _CartListScreenState extends State<CartListScreen> {
                   itemBuilder: (context,index){
 
                     final product = cartController.cart[index];
-                    return _buildCartListItem(product);
+                    return _buildCartListItem(product,user,cartController);
                   }),
             ),),
             Obx(()=> Padding(
@@ -86,7 +79,7 @@ class _CartListScreenState extends State<CartListScreen> {
     );
   }
 
-  Widget _buildCartListItem(product) {
+  Widget _buildCartListItem(product,user,cartController) {
     return Row(
       children: [
         Container(
@@ -142,6 +135,7 @@ class _CartListScreenState extends State<CartListScreen> {
                           fontSize: 17,
                         ),
                       ),
+                      Text("Size: ${product['variant']}", style: TextStyle(color: Colors.black54)),
                     ],
                   ),
                 ),
@@ -150,10 +144,12 @@ class _CartListScreenState extends State<CartListScreen> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Text("Size: ${product['variant']}", style: TextStyle(color: Colors.black54)),
+
+                    IconButton(onPressed: (){
+
+                      cartController.deleteFromCart(product.id);
+                      }, icon: Icon(Icons.delete,color: Colors.red,)),
                     SizedBox(height: 6),
-
-
                     ProductQuantityIncDecButton(
                       quantity: product['quantity'],
                       onChange: (newQuantity) {

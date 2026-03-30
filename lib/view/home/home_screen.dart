@@ -9,6 +9,7 @@ import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 
 import '../../controllers/auth_controller.dart';
+import '../../controllers/cart_controller.dart';
 import '../../controllers/home_controller.dart';
 import '../../utils/app_colors.dart';
 import '../../widgets/custom_sigle_product_grid.dart';
@@ -25,6 +26,7 @@ class HomeScreen extends StatefulWidget {
 
 final controller = Get.put(AuthController());
 final homecontroller = Get.find<HomeController>();
+
 class _HomeScreenState extends State<HomeScreen> {
 
   @override
@@ -40,49 +42,55 @@ class _HomeScreenState extends State<HomeScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Row(mainAxisAlignment: MainAxisAlignment.end,
+        elevation: 0,
+        backgroundColor: Colors.white,
+        title: Row(
+          //mainAxisAlignment: MainAxisAlignment.end,
           children: [
             Text('Swift',style:TextStyle(
               fontSize: 24,
-              fontWeight: FontWeight.w400
+              fontWeight: FontWeight.bold,
+                color: Colors.black
             ),),
             Text('Cart',style:TextStyle(
                 fontSize: 24,
-                color: Colors.black54
+                fontWeight: FontWeight.w500,
+                color: Colors.orange
             ),),
           ],
         ),
-        centerTitle: true,
+        centerTitle: false,
         leading: IconButton(onPressed: () {
           Get.to(ProfileScreen());
-        }, icon: Icon(Icons.person)),
+        }, icon: Icon(Icons.person,color: Colors.black)),
+
         actions: [
 
           //Profile Section
           IconButton(onPressed: () {
             Get.to(() => WishListScreen());
-          }, icon: Icon(Icons.favorite_border),),
-
-          // //Profile Section
-          // IconButton(onPressed: () {
-          //   Get.to(ProfileScreen());
-          // }, icon: Icon(Icons.person),),
+          }, icon: Icon(Icons.favorite_border,color: Colors.redAccent),),
 
           // Cart Section
           IconButton(
             onPressed: () {
               Get.to(CartListScreen());
             },
-            icon: Icon(Icons.shopping_cart),
+            icon: Icon(Icons.shopping_cart_outlined,color: Colors.black),
           ),
 
           //Log out
-          IconButton(onPressed: () {
+          IconButton(onPressed: () async{
 
-            FirebaseAuth.instance.currentUser == null ;
+            // clear cart first
+            Get.find<CartController>().cart.clear();
+            Get.find<CartController>().totalPrice.value = 0.0;
+
+            await FirebaseAuth.instance.signOut();
             Get.offAll(()=> SplashScreen());
 
-          }, icon: Icon(Icons.logout_outlined),),
+          }, icon: Icon(Icons.logout,color: Colors.black),),
+          SizedBox(width: 8,)
         ],),
       body: SingleChildScrollView(
         child: Padding(
