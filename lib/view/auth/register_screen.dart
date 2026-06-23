@@ -41,7 +41,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 children: [
                   SizedBox(height: 24,),
                   CustomTitleWidgets(title: 'Create Account', subtitle: ''),
-                  Text('Create an account so you can explore all the existing jobs',
+                  Text('Unlock exclusive deals and personalized shopping',
                     textAlign: TextAlign.center,
                     style: TextStyle(
                         fontWeight: FontWeight.bold,

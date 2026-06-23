@@ -1,5 +1,6 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:ecommerce/controllers/wish_list_controller.dart';
 import 'package:ecommerce/splash_screen.dart';
 import 'package:ecommerce/view/cart/cart_list_screen.dart';
 import 'package:ecommerce/view/categories/categories.dart';
@@ -26,6 +27,8 @@ class HomeScreen extends StatefulWidget {
 
 final controller = Get.put(AuthController());
 final homecontroller = Get.find<HomeController>();
+final cartcontroller = Get.find<CartController>();
+final wishlistcontroller = Get.find<WishListController>();
 
 class _HomeScreenState extends State<HomeScreen> {
 
@@ -34,6 +37,8 @@ class _HomeScreenState extends State<HomeScreen> {
     // TODO: implement initState
     super.initState();
     controller.loadProfile();
+    cartcontroller.getCart();
+    wishlistcontroller.loadWishlist();
 
   }
 

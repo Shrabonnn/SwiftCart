@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:ecommerce/controllers/cart_controller.dart';
 import 'package:ecommerce/utils/app_colors.dart';
 import 'package:ecommerce/view/home/home_screen.dart';
+import 'package:ecommerce/view/payment/payment.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -70,7 +71,8 @@ class CartListScreen extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: CustomButton(title: "Buy Now", onTap: () {
-                cartController.removecart();
+                //cartController.removecart();
+                Get.to(()=>Payment(totalbill:cartController.totalPrice.value,));
               }),
             ),
           ],

@@ -22,8 +22,10 @@ class WelcomeScreen extends StatelessWidget {
           children: [
             Image.asset(ImagePath.welcomeScreenImg),
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: CustomTitleWidgets(title: 'Discover Your Dream Job here', subtitle: 'Explore all the existing job roles based on your interest and study major'),
+              padding: const EdgeInsets.symmetric(horizontal: 10),
+              child: CustomTitleWidgets(
+              title: 'Everything You Need, All in One Place',
+              subtitle: 'Explore top products and enjoy seamless shopping',)
             ),
 
             Row(
